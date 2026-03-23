@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bağış Hareketleri Raporu – AFAD Yönetim Paneli</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Kaynak koddan: --afad-mavi: #0054a6, --afad-turuncu: #f47920 */
+    --primary: #0054a6;
+    --primary-dark: #003d7a;
+    --primary-light: #cce0f5;
+    --primary-muted: rgba(0,84,166,0.10);
+    --orange: #f47920;
+    --orange-dark: #d4620f;
+    --navy: #0054a6;
+    --navy-mid: #0066cc;
+    --navy-light: #3380c4;
+
+    --bg: #F8F9FA;
+    --surface: #FFFFFF;
+    --surface-2: #F1F4F8;
+    --border: #E2E6ED;
+    --border-strong: #C8CDD8;
+    --text-primary: #1a1a2e;
+    --text-secondary: #374D6A;
+    --text-muted: #7A8FA8;
+    --sidebar-bg: #0054a6;
+    --sidebar-text: #b3d0ef;
+    --sidebar-active: #f47920;
+    --sidebar-active-bg: rgba(244,121,32,0.18);
+    --header-bg: #FFFFFF;
+    --header-border: #E2E6ED;
+    --shadow-sm: 0 1px 3px rgba(0,84,166,0.07);
+    --shadow-md: 0 4px 12px rgba(0,84,166,0.10);
+    --shadow-lg: 0 8px 28px rgba(0,84,166,0.13);
+    --badge-success-bg: #ECFDF5;
+    --badge-success-text: #065F46;
+    --badge-fail-bg: #FEF2F2;
+    --badge-fail-text: #991B1B;
+    --badge-warn-bg: #FFFBEB;
+    --badge-warn-text: #92400E;
+    --row-hover: rgba(0,84,166,0.04);
+    --input-bg: #FFFFFF;
+  }
+
+  [data-theme="dark"] {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface-2: #263347;
+    --border: #2a3a52;
+    --border-strong: #3a5070;
+    --text-primary: #e2eaf5;
+    --text-secondary: #93b4d4;
+    --text-muted: #4e6a8a;
+    --sidebar-bg: #002d6b;
+    --sidebar-text: #7aaad4;
+    --sidebar-active: #f47920;
+    --sidebar-active-bg: rgba(244,121,32,0.20);
+    --header-bg: #1e293b;
+    --header-border: rgba(255,255,255,0.08);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.35);
+    --shadow-lg: 0 8px 28px rgba(0,0,0,0.4);
+    --badge-success-bg: rgba(6,95,70,0.2);
+    --badge-success-text: #34D399;
+    --badge-fail-bg: rgba(153,27,27,0.2);
+    --badge-fail-text: #FCA5A5;
+    --badge-warn-bg: rgba(146,64,14,0.2);
+    --badge-warn-text: #FCD34D;
+    --row-hover: rgba(0,84,166,0.08);
+    --input-bg: #263347;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    font-size: 13.5px;
+    transition: background 0.25s, color 0.25s;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 230px;
+    min-width: 230px;
+    background: var(--sidebar-bg);
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(255,255,255,0.04);
+    overflow-y: auto;
+    z-index: 50;
+    transition: background 0.25s;
+  }
+
+  .sidebar-logo {
+    padding: 0 20px;
+    height: 64px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex; align-items: center;
+    flex-shrink: 0;
+    background: #0054a6;
+  }
+  
+
+  .sidebar-section {
+    padding: 16px 12px 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+  }
+
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 14px;
+    border-radius: 7px;
+    margin: 1px 8px;
+    cursor: pointer;
+    color: var(--sidebar-text);
+    font-size: 13px;
+    font-weight: 400;
+    transition: all 0.15s;
+    text-decoration: none;
+  }
+  .sidebar-item:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.85); }
+  .sidebar-item.active {
+    background: var(--sidebar-active-bg);
+    color: var(--sidebar-active);
+    font-weight: 600;
+    border-left: 2px solid var(--sidebar-active);
+    margin-left: 6px;
+  }
+  .sidebar-item svg { width: 15px; height: 15px; flex-shrink: 0; opacity: 0.8; }
+  .sidebar-item.active svg { opacity: 1; }
+
+  .sidebar-sub {
+    padding-left: 8px;
+  }
+  .sidebar-sub .sidebar-item {
+    font-size: 12.5px;
+    padding: 7px 14px;
+    color: rgba(200,208,220,0.7);
+  }
+  .sidebar-sub .sidebar-item.active { color: var(--sidebar-active); }
+
+  /* ── MAIN ── */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--header-border);
+    padding: 0 24px;
+    height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+    box-shadow: var(--shadow-sm);
+    transition: background 0.25s, border-color 0.25s;
+  }
+  .breadcrumb {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12.5px; color: var(--text-muted);
+  }
+  .breadcrumb span { color: var(--text-primary); font-weight: 600; }
+  .breadcrumb svg { width: 12px; height: 12px; }
+
+  .header-actions { display: flex; align-items: center; gap: 10px; }
+
+  .theme-toggle {
+    width: 34px; height: 34px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-secondary);
+    transition: all 0.15s;
+  }
+  .theme-toggle:hover { background: var(--surface-2); color: var(--text-primary); }
+
+  .user-chip {
+    display: flex; align-items: center; gap: 8px;
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .user-chip:hover { background: var(--surface-2); }
+  .user-avatar {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--primary);
+    color: #fff; font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ── PAGE CONTENT ── */
+  .page-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 22px 24px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+
+  .page-header {
+    display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  .page-title {
+    font-size: 19px; font-weight: 700; color: var(--text-primary);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .page-title-badge {
+    font-size: 11px; font-weight: 600; padding: 3px 8px;
+    background: var(--primary-muted);
+    color: var(--primary);
+    border-radius: 20px;
+    border: 1px solid rgba(244,121,32,0.18);
+  }
+  .page-subtitle { font-size: 12.5px; color: var(--text-muted); margin-top: 3px; }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer; border: none; transition: all 0.15s;
+    font-family: inherit; white-space: nowrap;
+  }
+  .btn svg { width: 14px; height: 14px; }
+  .btn-primary {
+    background: var(--primary);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0,84,166,0.30);
+  }
+  .btn-primary:hover { background: var(--primary-dark); box-shadow: 0 4px 12px rgba(0,84,166,0.40); transform: translateY(-1px); }
+  .btn-secondary {
+    background: var(--surface);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { background: var(--surface-2); color: var(--text-primary); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--primary);
+    border: 1px solid rgba(0,84,166,0.3);
+  }
+  .btn-ghost:hover { background: var(--primary-muted); }
+  .btn-excel {
+    background: #1D6F42;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(29,111,66,0.25);
+  }
+  .btn-excel:hover { background: #155233; transform: translateY(-1px); }
+
+  /* ── FILTER CARD ── */
+  .card {
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    transition: background 0.25s, border-color 0.25s;
+  }
+  .card-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    flex-wrap: wrap;
+  }
+  .card-title {
+    font-size: 13px; font-weight: 700;
+    color: var(--text-primary);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-title svg { width: 14px; height: 14px; color: var(--primary); }
+
+  .filter-body {
+    padding: 16px 18px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px 14px;
+  }
+
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-label {
+    font-size: 11.5px; font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .form-label .required { color: var(--primary); margin-left: 2px; }
+
+  .form-control {
+    padding: 8px 11px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: var(--input-bg);
+    color: var(--text-primary);
+    font-size: 13px;
+    font-family: inherit;
+    transition: border-color 0.15s, box-shadow 0.15s, background 0.25s;
+    outline: none;
+    width: 100%;
+  }
+  .form-control::placeholder { color: var(--text-muted); }
+  .form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0,84,166,0.10);
+  }
+  select.form-control { appearance: none; cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238492A6' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center;
+    padding-right: 28px;
+  }
+  input[type="number"].form-control::-webkit-outer-spin-button,
+  input[type="number"].form-control::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+  .filter-actions {
+    padding: 12px 18px;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+  }
+
+  /* ── STATS ROW ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 12px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    box-shadow: var(--shadow-sm);
+    transition: background 0.25s;
+  }
+  .stat-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-muted); margin-bottom: 6px; }
+  .stat-value { font-size: 22px; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+  .stat-sub { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+  .stat-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+
+  /* ── DATA GRID ── */
+  .grid-card { overflow: hidden; }
+  .grid-toolbar {
+    padding: 12px 16px;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+  }
+  .grid-info { font-size: 12.5px; color: var(--text-muted); }
+  .grid-info strong { color: var(--text-primary); font-weight: 600; }
+
+  .table-wrap { overflow-x: auto; }
+  table {
+    width: 100%; border-collapse: collapse;
+    font-size: 12.5px;
+    min-width: 1400px;
+  }
+  thead { background: var(--surface-2); }
+  th {
+    padding: 10px 12px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.15s;
+  }
+  th:hover { color: var(--text-primary); }
+  th .sort-icon { margin-left: 4px; opacity: 0.4; }
+  th.sorted { color: var(--primary); }
+  th.sorted .sort-icon { opacity: 1; color: var(--primary); }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.12s;
+  }
+  tbody tr:hover { background: var(--row-hover); }
+  tbody tr:last-child { border-bottom: none; }
+  td {
+    padding: 10px 12px;
+    color: var(--text-primary);
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+  td.mono { font-family: 'IBM Plex Mono', monospace; font-size: 12px; }
+  td.muted { color: var(--text-muted); }
+  .td-name { font-weight: 500; }
+  .td-anon { color: var(--text-muted); font-style: italic; }
+
+  /* Badges */
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-size: 11.5px; font-weight: 600;
+    line-height: 1.6;
+  }
+  .badge-success { background: var(--badge-success-bg); color: var(--badge-success-text); }
+  .badge-fail { background: var(--badge-fail-bg); color: var(--badge-fail-text); }
+  .badge-warn { background: var(--badge-warn-bg); color: var(--badge-warn-text); }
+  .badge-neutral { background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--border); }
+  .badge-info { background: rgba(0,84,166,0.10); color: #0054a6; }
+  [data-theme="dark"] .badge-info { color: #94B0CC; }
+  .badge svg { width: 8px; height: 8px; }
+
+  /* ── PAGINATION ── */
+  .pagination-bar {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+  }
+  .pagination-info { font-size: 12px; color: var(--text-muted); }
+  .pagination-controls { display: flex; align-items: center; gap: 4px; }
+  .page-btn {
+    min-width: 32px; height: 32px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-secondary);
+    font-size: 12.5px; font-weight: 500;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.12s; font-family: inherit;
+    padding: 0 6px;
+  }
+  .page-btn:hover { background: var(--surface-2); color: var(--text-primary); border-color: var(--border-strong); }
+  .page-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .page-size-select {
+    padding: 5px 8px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: var(--input-bg);
+    color: var(--text-primary);
+    font-size: 12px; font-family: inherit;
+    cursor: pointer;
+  }
+
+  /* Active filter tag */
+  .active-filters { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 18px 14px; }
+  .filter-tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 9px;
+    background: var(--primary-muted);
+    border: 1px solid rgba(0,84,166,0.20);
+    border-radius: 20px;
+    font-size: 11.5px; color: var(--primary); font-weight: 600;
+    cursor: pointer;
+  }
+  .filter-tag:hover { background: rgba(244,121,32,0.18); }
+  .filter-tag svg { width: 10px; height: 10px; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--text-primary); color: var(--bg);
+    padding: 12px 18px; border-radius: 10px;
+    font-size: 13px; font-weight: 500;
+    box-shadow: var(--shadow-lg);
+    display: flex; align-items: center; gap: 8px;
+    transform: translateY(80px); opacity: 0;
+    transition: all 0.25s cubic-bezier(.34,1.56,.64,1);
+    z-index: 999;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast svg { width: 16px; height: 16px; color: #34D399; }
+
+  /* Divider line before table */
+  .section-divider {
+    height: 3px;
+    background: linear-gradient(90deg, #f47920 0%, #0054a6 55%, transparent 100%);
+    border-radius: 2px;
+    margin-bottom: 0;
+  }
+
+  .view-panel { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .filter-body { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <img src="https://www.afad.gov.tr/kurumlar/afad.gov.tr/IcSite/afad-logo/afad.png"
+         alt="AFAD Logo"
+         style="height:36px;width:auto;object-fit:contain;filter:brightness(0) invert(1);">
+  </div>
+
+  <div class="sidebar-section">Ana Menü</div>
+  <a class="sidebar-item" onclick="showView('view-dashboard')" href="#">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Genel Bakış
+  </a>
+
+  <div class="sidebar-section">Kampanya Yönetimi</div>
+  <a class="sidebar-item" onclick="showView('view-projects')" href="#">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
+    Projeler
+  </a>
+  <a class="sidebar-item" onclick="showView('view-categories')" href="#">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 10h16M4 14h8"/></svg>
+    Kategoriler
+  </a>
+  <a class="sidebar-item" onclick="showView('view-campaigns')" href="#">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+    Kampanyalar
+  </a>
+
+  <div class="sidebar-section">Bağış Yönetimi</div>
+  <a class="sidebar-item" onclick="showView('view-currencies')" href="#">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+    Para Birimleri
+  </a>
+
+  <div class="sidebar-section">Raporlar</div>
+  <div class="sidebar-sub">
+    <a class="sidebar-item active" id="nav-bagis" onclick="showView('view-bagis')" href="#">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      Bağış Hareketleri
+    </a>
+    <a class="sidebar-item" href="#">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      Kanal Raporu
+    </a>
+  </div>
+
+  <div class="sidebar-section">İçerik Yönetimi</div>
+  <a class="sidebar-item" onclick="showView('view-menus')" href="#">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    Menü Yönetimi
+  </a>
+
+  <div class="sidebar-section">Sistem</div>
+  <a class="sidebar-item" href="#">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 19.07l1.41-1.41M21 12h-2M5 12H3M19.07 19.07l-1.41-1.41M4.93 4.93l1.41 1.41M12 21v-2M12 5V3"/></svg>
+    Ayarlar
+  </a>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <!-- HEADER -->
+  <header class="header">
+    <div class="breadcrumb" id="breadcrumb">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+      Yönetim Paneli
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      Raporlar
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      <span id="breadcrumb-current">Bağış Hareketleri Raporu</span>
+    </div>
+    <div class="header-actions">
+      <button class="theme-toggle" onclick="toggleTheme()" title="Tema değiştir">
+        <svg id="theme-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="16" height="16">
+          <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+        </svg>
+      </button>
+      <div class="user-chip">
+        <div class="user-avatar">AK</div>
+        Admin Kullanıcı
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="12" height="12"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- VIEW: BAĞIŞ HAREKETLERİ RAPORU (default)   -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div id="view-bagis" class="view-panel">
+  <!-- PAGE CONTENT -->
+  <div class="page-content">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div>
+        <div class="page-title">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Bağış Hareketleri Raporu
+          <span class="page-title-badge">CANLI</span>
+        </div>
+        <div class="page-subtitle">Tüm bağışçıların bağış kanalları ve tutar detaylarını görüntüleyin</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-secondary" onclick="resetFilters()">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+          Temizle
+        </button>
+        <button class="btn btn-excel" onclick="exportExcel()">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Excel'e Aktar
+        </button>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Toplam Bağış</div>
+        <div class="stat-value">2.847</div>
+        <div class="stat-sub"><span class="stat-dot" style="background:#34D399"></span>Bu ay</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Başarılı Ödeme</div>
+        <div class="stat-value">2.691</div>
+        <div class="stat-sub"><span class="stat-dot" style="background:var(--primary)"></span>%94.5 oranı</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Toplam Tutar</div>
+        <div class="stat-value">₺1.24M</div>
+        <div class="stat-sub"><span class="stat-dot" style="background:#0054a6"></span>TRY bazlı</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Düzenli Bağış</div>
+        <div class="stat-value">843</div>
+        <div class="stat-sub"><span class="stat-dot" style="background:#F59E0B"></span>%29.6 pay</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Anonim Bağış</div>
+        <div class="stat-value">312</div>
+        <div class="stat-sub"><span class="stat-dot" style="background:#8B5CF6"></span>%10.9 pay</div>
+      </div>
+    </div>
+
+    <!-- FILTER CARD -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+          Filtreleme
+        </div>
+        <button class="btn btn-ghost" style="font-size:12px;padding:5px 10px;" onclick="toggleFilter()">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="12" height="12" id="filter-chevron"><polyline points="6 9 12 15 18 9"/></svg>
+          <span id="filter-toggle-label">Gizle</span>
+        </button>
+      </div>
+
+      <div id="filter-body" class="filter-body">
+        <div class="form-group">
+          <label class="form-label">Bağış Detay Kodu</label>
+          <input type="text" class="form-control" id="f-code" placeholder="Örn: BGS-20240315-001" maxlength="50">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Bağışçı Adı Soyadı</label>
+          <input type="text" class="form-control" id="f-name" placeholder="Ad veya soyad girin" maxlength="100">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Kampanya Adı</label>
+          <select class="form-control" id="f-campaign">
+            <option value="">Tümü</option>
+            <option>Deprem Yardım Kampanyası 2024</option>
+            <option>Kış Yardım Seferberliği</option>
+            <option>Sel Afeti Acil Yardım</option>
+            <option>Okul Çantası Kampanyası</option>
+            <option>Genel Bağış</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Para Birimi</label>
+          <select class="form-control" id="f-currency">
+            <option value="">Tümü</option>
+            <option>TRY – Türk Lirası</option>
+            <option>USD – Amerikan Doları</option>
+            <option>EUR – Euro</option>
+            <option>GBP – İngiliz Sterlini</option>
+            <option>SAR – Suudi Riyali</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tutar (min)</label>
+          <input type="number" class="form-control" id="f-amount-min" placeholder="0" min="1">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tutar (max)</label>
+          <input type="number" class="form-control" id="f-amount-max" placeholder="Maksimum" min="1">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Bağış Türü</label>
+          <select class="form-control" id="f-type">
+            <option value="">Tümü</option>
+            <option>Düzenli Nakdi Bağış</option>
+            <option>Tek Seferlik Bağış</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ödeme Durumu</label>
+          <select class="form-control" id="f-status">
+            <option value="">Tümü</option>
+            <option>Başarılı</option>
+            <option>Başarısız</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Bağışçı Notu / Açıklama</label>
+          <input type="text" class="form-control" id="f-note" placeholder="Açıklama metni ara..." maxlength="200">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Bağış Tarihi (Başlangıç)</label>
+          <input type="date" class="form-control" id="f-date-start">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Bağış Tarihi (Bitiş)</label>
+          <input type="date" class="form-control" id="f-date-end">
+        </div>
+      </div>
+
+      <div id="active-tags" class="active-filters" style="display:none;"></div>
+
+      <div class="filter-actions">
+        <button class="btn btn-secondary" onclick="resetFilters()">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+          Temizle
+        </button>
+        <button class="btn btn-primary" onclick="applyFilters()">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Filtrele
+        </button>
+      </div>
+    </div>
+
+    <!-- DATA GRID -->
+    <div class="card grid-card">
+      <div class="section-divider"></div>
+      <div class="grid-toolbar">
+        <div class="card-title" style="font-size:13px;">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="14" height="14" style="color:var(--primary)"><path d="M9 17H7A5 5 0 017 7h2M15 7h2a5 5 0 010 10h-2M11 12h2"/></svg>
+          Bağış Hareketleri Listesi
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <div class="grid-info">Toplam <strong id="total-count">2.847</strong> kayıt</div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-size:12px;color:var(--text-muted);">Sayfa başı:</span>
+            <select class="page-size-select" onchange="changePageSize(this.value)">
+              <option value="10">10</option>
+              <option value="20" selected>20</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table id="main-table">
+          <thead>
+            <tr>
+              <th onclick="sortTable(0)">#<span class="sort-icon">↕</span></th>
+              <th onclick="sortTable(1)">Bağış Detay Kodu<span class="sort-icon">↕</span></th>
+              <th onclick="sortTable(2)">Sipariş ID<span class="sort-icon">↕</span></th>
+              <th onclick="sortTable(3)">Proje Kodu<span class="sort-icon">↕</span></th>
+              <th onclick="sortTable(4)">Kampanya Adı<span class="sort-icon">↕</span></th>
+              <th onclick="sortTable(5)">Kampanya IBAN</th>
+              <th onclick="sortTable(6)">Bağışçı Adı Soyadı<span class="sort-icon">↕</span></th>
+              <th onclick="sortTable(7)">Birim Tutar<span class="sort-icon">↕</span></th>
+              <th onclick="sortTable(8)">Para Birimi<span class="sort-icon">↕</span></th>
+              <th onclick="sortTable(9)">Bağış Kanalı<span class="sort-icon">↕</span></th>
+              <th onclick="sortTable(10)">Bağış Tarihi<span class="sort-icon">↕</span></th>
+              <th onclick="sortTable(11)">Bağış Türü<span class="sort-icon">↕</span></th>
+              <th>Bağışçı Notu</th>
+              <th onclick="sortTable(13)">Anonim mi?<span class="sort-icon">↕</span></th>
+              <th onclick="sortTable(14)">Ödeme Yöntemi<span class="sort-icon">↕</span></th>
+              <th onclick="sortTable(15)">Ödeme Durumu<span class="sort-icon">↕</span></th>
+              <th onclick="sortTable(16)">Dağıtım Talimat Sonucu<span class="sort-icon">↕</span></th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination-bar">
+        <div class="pagination-info" id="page-info">1–20 / 2.847 kayıt gösteriliyor</div>
+        <div class="pagination-controls" id="pagination-controls"></div>
+      </div>
+    </div>
+  </div>
+  </div><!-- /view-bagis -->
+
+  <!-- ═══════════════════════════════ -->
+  <!-- VIEW: PROJE YÖNETİMİ           -->
+  <!-- ═══════════════════════════════ -->
+  <div id="view-projects" class="view-panel" style="display:none;">
+  <div class="page-content">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Proje Yönetimi</div>
+        <div class="page-subtitle">Bağış projelerini yönetin ve takip edin</div>
+      </div>
+      <button class="btn btn-primary" onclick="alert('Yeni Proje formu açılacak')">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        + Yeni Proje
+      </button>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="14" height="14" style="color:var(--primary)"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>Ara & Filtrele</div>
+      </div>
+      <div style="padding:14px 18px;display:flex;gap:12px;flex-wrap:wrap;">
+        <input type="text" class="form-control" placeholder="Proje adı veya kodu..." style="max-width:260px;" oninput="filterGenericTable('tbl-projects',this.value)">
+        <select class="form-control" style="max-width:160px;" onchange="filterGenericTableByCol('tbl-projects',3,this.value)">
+          <option value="">Aktif mi? — Tümü</option>
+          <option>Evet</option>
+          <option>Hayır</option>
+        </select>
+      </div>
+    </div>
+    <div class="card grid-card">
+      <div class="section-divider"></div>
+      <div class="table-wrap">
+        <table id="tbl-projects">
+          <thead><tr>
+            <th>İşlemler</th>
+            <th>Proje Kodu</th>
+            <th>Proje Adı</th>
+            <th>Aktif mi?</th>
+            <th>Oluşturulma Tarihi</th>
+          </tr></thead>
+          <tbody>
+            <tr><td><span class="badge badge-info" style="cursor:pointer">Düzenle</span></td><td class="mono">P-000000001</td><td class="td-name">Deprem Yardımı Projeleri</td><td><span class="badge badge-success">Evet</span></td><td class="muted">13 Şubat 2026 14:51:26</td></tr>
+            <tr><td><span class="badge badge-info" style="cursor:pointer">Düzenle</span></td><td class="mono">P-000000002</td><td class="td-name">Aşevi Projeleri</td><td><span class="badge badge-success">Evet</span></td><td class="muted">13 Şubat 2026 14:51:26</td></tr>
+            <tr><td><span class="badge badge-info" style="cursor:pointer">Düzenle</span></td><td class="mono">P-000000003</td><td class="td-name">Arama Kurtarma Projesi</td><td><span class="badge badge-success">Evet</span></td><td class="muted">14 Şubat 2026 09:10:00</td></tr>
+            <tr><td><span class="badge badge-info" style="cursor:pointer">Düzenle</span></td><td class="mono">P-000000004</td><td class="td-name">Yurtiçi Gıda Yardımı</td><td><span class="badge badge-success">Evet</span></td><td class="muted">15 Şubat 2026 11:22:45</td></tr>
+            <tr><td><span class="badge badge-info" style="cursor:pointer">Düzenle</span></td><td class="mono">P-000000005</td><td class="td-name">Uluslararası İnsani Yardım</td><td><span class="badge badge-neutral">Hayır</span></td><td class="muted">20 Ocak 2026 08:00:00</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination-bar"><div class="pagination-info">5 kayıt gösteriliyor</div></div>
+    </div>
+  </div>
+  </div><!-- /view-projects -->
+
+  <!-- ═══════════════════════════════ -->
+  <!-- VIEW: KATEGORİ YÖNETİMİ        -->
+  <!-- ═══════════════════════════════ -->
+  <div id="view-categories" class="view-panel" style="display:none;">
+  <div class="page-content">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Kategori Yönetimi</div>
+        <div class="page-subtitle">Bağış kategorilerini ve hiyerarşisini yönetin</div>
+      </div>
+      <button class="btn btn-primary" onclick="alert('Yeni Kategori formu açılacak')">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        + Yeni Kategori
+      </button>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="14" height="14" style="color:var(--primary)"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>Ara & Filtrele</div>
+      </div>
+      <div style="padding:14px 18px;display:flex;gap:12px;flex-wrap:wrap;">
+        <input type="text" class="form-control" placeholder="Kategori adı veya kodu..." style="max-width:260px;" oninput="filterGenericTable('tbl-categories',this.value)">
+        <select class="form-control" style="max-width:160px;">
+          <option value="">Dil — Tümü</option>
+          <option>Türkçe</option>
+          <option>İngilizce</option>
+        </select>
+        <select class="form-control" style="max-width:160px;">
+          <option value="">Aktif mi? — Tümü</option>
+          <option>Evet</option>
+          <option>Hayır</option>
+        </select>
+      </div>
+    </div>
+    <div class="card grid-card">
+      <div class="section-divider"></div>
+      <div class="table-wrap">
+        <table id="tbl-categories">
+          <thead><tr>
+            <th>İşlemler</th>
+            <th>Kategori Kodu</th>
+            <th>Kategori Adı</th>
+            <th>Dil</th>
+            <th>Kategori Kırılımı</th>
+            <th>Gösterim Sırası</th>
+            <th>Aktif mi?</th>
+            <th>Oluşturulma Tarihi</th>
+          </tr></thead>
+          <tbody>
+            <tr><td><span class="badge badge-info" style="cursor:pointer">Düzenle</span></td><td class="mono">K-000000001</td><td class="td-name">Nakdi Bağış</td><td>Türkçe</td><td class="muted">—</td><td>1</td><td><span class="badge badge-success">Evet</span></td><td class="muted">13 Şubat 2026 14:51:26</td></tr>
+            <tr><td><span class="badge badge-info" style="cursor:pointer">Düzenle</span></td><td class="mono">K-000000002</td><td class="td-name">Gayrimenkul Bağış</td><td>Türkçe</td><td>Ayni Bağış</td><td>2</td><td><span class="badge badge-success">Evet</span></td><td class="muted">13 Şubat 2026 14:51:26</td></tr>
+            <tr><td><span class="badge badge-info" style="cursor:pointer">Düzenle</span></td><td class="mono">K-000000003</td><td class="td-name">Afet Yardımları</td><td>Türkçe</td><td>Nakdi Bağış</td><td>1</td><td><span class="badge badge-success">Evet</span></td><td class="muted">14 Şubat 2026 10:00:00</td></tr>
+            <tr><td><span class="badge badge-info" style="cursor:pointer">Düzenle</span></td><td class="mono">K-000000004</td><td class="td-name">Deprem Kampanyaları</td><td>Türkçe</td><td>Nakdi Bağış &gt; Afet Yardımları</td><td>1</td><td><span class="badge badge-success">Evet</span></td><td class="muted">14 Şubat 2026 10:05:00</td></tr>
+            <tr><td><span class="badge badge-info" style="cursor:pointer">Düzenle</span></td><td class="mono">K-000000005</td><td class="td-name">Ayni Bağış</td><td>Türkçe</td><td>—</td><td>3</td><td><span class="badge badge-success">Evet</span></td><td class="muted">15 Şubat 2026 09:30:00</td></tr>
+            <tr><td><span class="badge badge-info" style="cursor:pointer">Düzenle</span></td><td class="mono">K-000000006</td><td class="td-name">Cash Donation</td><td>İngilizce</td><td>—</td><td>1</td><td><span class="badge badge-success">Evet</span></td><td class="muted">13 Şubat 2026 15:00:00</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination-bar"><div class="pagination-info">6 kayıt gösteriliyor</div></div>
+    </div>
+  </div>
+  </div><!-- /view-categories -->
+
+  <!-- ═══════════════════════════════ -->
+  <!-- VIEW: KAMPANYA YÖNETİMİ        -->
+  <!-- ═══════════════════════════════ -->
+  <div id="view-campaigns" class="view-panel" style="display:none;">
+  <div class="page-content">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Kampanya Yönetimi</div>
+        <div class="page-subtitle">Aktif ve pasif kampanyaları yönetin</div>
+      </div>
+      <button class="btn btn-primary" onclick="alert('Yeni Kampanya formu açılacak')">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        + Yeni Kampanya
+      </button>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="14" height="14" style="color:var(--primary)"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>Ara & Filtrele</div>
+      </div>
+      <div style="padding:14px 18px;display:flex;gap:12px;flex-wrap:wrap;">
+        <input type="text" class="form-control" placeholder="Kampanya adı veya kodu..." style="max-width:260px;" oninput="filterGenericTable('tbl-campaigns',this.value)">
+        <select class="form-control" style="max-width:180px;">
+          <option value="">Kampanya Tipi — Tümü</option>
+          <option>Bağış Alınabilir</option>
+          <option>Bağış Alınamayan</option>
+          <option>Container</option>
+        </select>
+        <select class="form-control" style="max-width:160px;">
+          <option value="">Kayıt Durumu — Tümü</option>
+          <option>Evet</option>
+          <option>Hayır</option>
+        </select>
+      </div>
+    </div>
+    <div class="card grid-card">
+      <div class="section-divider"></div>
+      <div class="table-wrap">
+        <table id="tbl-campaigns">
+          <thead><tr>
+            <th>İşlemler</th>
+            <th>Kampanya Kodu</th>
+            <th>Kampanya Adı</th>
+            <th>Proje</th>
+            <th>Dil</th>
+            <th>Kategori</th>
+            <th>Bağlı Üst Kampanya</th>
+            <th>IBAN Bilgisi</th>
+            <th>Kayıt Durumu</th>
+          </tr></thead>
+          <tbody>
+            <tr><td><span class="badge badge-info" style="cursor:pointer">Düzenle</span></td><td class="mono">C-000000001</td><td class="td-name">6 Şubat Deprem Kampanyası</td><td>Deprem Kampanyaları</td><td>Türkçe</td><td>Deprem Kampanyaları</td><td class="muted">—</td><td><span class="badge badge-success">Evet</span></td><td><span class="badge badge-success">Evet</span></td></tr>
+            <tr><td><span class="badge badge-info" style="cursor:pointer">Düzenle</span></td><td class="mono">C-000000002</td><td class="td-name">Gayrimenkul Bağış</td><td class="muted">—</td><td>Türkçe</td><td>Gayrimenkul Bağışlar</td><td class="muted">—</td><td><span class="badge badge-neutral">Hayır</span></td><td><span class="badge badge-success">Evet</span></td></tr>
+            <tr><td><span class="badge badge-info" style="cursor:pointer">Düzenle</span></td><td class="mono">C-000000003</td><td class="td-name">Ayni Bağış</td><td class="muted">—</td><td>Türkçe</td><td>Ayni Bağış</td><td class="muted">—</td><td><span class="badge badge-neutral">Hayır</span></td><td><span class="badge badge-success">Evet</span></td></tr>
+            <tr><td><span class="badge badge-info" style="cursor:pointer">Düzenle</span></td><td class="mono">C-000000004</td><td class="td-name">Ağrı Tutak Aşevi</td><td>Aşevi Bağışı</td><td>Türkçe</td><td>Nakdi Bağış</td><td>Nakdi Bağış</td><td><span class="badge badge-success">Evet</span></td><td><span class="badge badge-success">Evet</span></td></tr>
+            <tr><td><span class="badge badge-info" style="cursor:pointer">Düzenle</span></td><td class="mono">C-000000005</td><td class="td-name">Van Deprem Kampanyası</td><td>Deprem Kampanyaları</td><td>Türkçe</td><td>Deprem Kampanyaları</td><td>6 Şubat Depremi</td><td><span class="badge badge-success">Evet</span></td><td><span class="badge badge-success">Evet</span></td></tr>
+            <tr><td><span class="badge badge-info" style="cursor:pointer">Düzenle</span></td><td class="mono">C-000000006</td><td class="td-name">Filistin Yardım Kampanyası</td><td>Uluslararası İnsani Yardım</td><td>Türkçe</td><td>Nakdi Bağış &gt; Afet</td><td class="muted">—</td><td><span class="badge badge-success">Evet</span></td><td><span class="badge badge-success">Evet</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination-bar"><div class="pagination-info">6 kayıt gösteriliyor</div></div>
+    </div>
+  </div>
+  </div><!-- /view-campaigns -->
+
+  <!-- ═══════════════════════════════ -->
+  <!-- VIEW: PARA BİRİMLERİ           -->
+  <!-- ═══════════════════════════════ -->
+  <div id="view-currencies" class="view-panel" style="display:none;">
+  <div class="page-content">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Para Birimleri</div>
+        <div class="page-subtitle">Sistemdeki para birimlerini ve kur bilgilerini yönetin</div>
+      </div>
+      <button class="btn btn-primary" onclick="alert('Yeni Para Birimi formu açılacak')">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        + Yeni Para Birimi
+      </button>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="14" height="14" style="color:var(--primary)"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>Ara & Filtrele</div>
+      </div>
+      <div style="padding:14px 18px;display:flex;gap:12px;flex-wrap:wrap;">
+        <input type="text" class="form-control" placeholder="Para birimi adı veya kodu..." style="max-width:260px;" oninput="filterGenericTable('tbl-currencies',this.value)">
+        <select class="form-control" style="max-width:160px;">
+          <option value="">Aktif mi? — Tümü</option>
+          <option>Evet</option>
+          <option>Hayır</option>
+        </select>
+      </div>
+    </div>
+    <div class="card grid-card">
+      <div class="section-divider"></div>
+      <div class="table-wrap">
+        <table id="tbl-currencies">
+          <thead><tr>
+            <th>İşlemler</th>
+            <th>Adı</th>
+            <th>Kodu</th>
+            <th>Sembol</th>
+            <th>Kur Tarihi</th>
+            <th>Alış Kuru</th>
+            <th>Satış Kuru</th>
+            <th>Aktif mi?</th>
+            <th>Varsayılan mı?</th>
+            <th>Gösterim Sırası</th>
+            <th>Oluşturulma Tarihi</th>
+          </tr></thead>
+          <tbody>
+            <tr><td><span class="badge badge-info" style="cursor:pointer">Düzenle</span></td><td class="td-name">Türk Lirası</td><td class="mono">TRY</td><td>₺</td><td class="muted">17.03.2026</td><td>1,0000</td><td>1,0000</td><td><span class="badge badge-success">Evet</span></td><td><span class="badge badge-success">Evet</span></td><td>1</td><td class="muted">01.01.2026</td></tr>
+            <tr><td><span class="badge badge-info" style="cursor:pointer">Düzenle</span></td><td class="td-name">Euro</td><td class="mono">EUR</td><td>€</td><td class="muted">17.03.2026</td><td>38,4210</td><td>38,6540</td><td><span class="badge badge-success">Evet</span></td><td><span class="badge badge-neutral">Hayır</span></td><td>2</td><td class="muted">01.01.2026</td></tr>
+            <tr><td><span class="badge badge-info" style="cursor:pointer">Düzenle</span></td><td class="td-name">Amerikan Doları</td><td class="mono">USD</td><td>$</td><td class="muted">17.03.2026</td><td>35,7800</td><td>35,9200</td><td><span class="badge badge-success">Evet</span></td><td><span class="badge badge-neutral">Hayır</span></td><td>3</td><td class="muted">01.01.2026</td></tr>
+            <tr><td><span class="badge badge-info" style="cursor:pointer">Düzenle</span></td><td class="td-name">İngiliz Sterlini</td><td class="mono">GBP</td><td>£</td><td class="muted">17.03.2026</td><td>45,1200</td><td>45,4100</td><td><span class="badge badge-success">Evet</span></td><td><span class="badge badge-neutral">Hayır</span></td><td>4</td><td class="muted">01.01.2026</td></tr>
+            <tr><td><span class="badge badge-info" style="cursor:pointer">Düzenle</span></td><td class="td-name">Suudi Riyali</td><td class="mono">SAR</td><td>﷼</td><td class="muted">17.03.2026</td><td>9,5400</td><td>9,6100</td><td><span class="badge badge-neutral">Hayır</span></td><td><span class="badge badge-neutral">Hayır</span></td><td>5</td><td class="muted">01.01.2026</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination-bar"><div class="pagination-info">5 kayıt gösteriliyor</div></div>
+    </div>
+  </div>
+  </div><!-- /view-currencies -->
+
+  <!-- ═══════════════════════════════ -->
+  <!-- VIEW: MENÜ YÖNETİMİ            -->
+  <!-- ═══════════════════════════════ -->
+  <div id="view-menus" class="view-panel" style="display:none;">
+  <div class="page-content">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Menü Yönetimi</div>
+        <div class="page-subtitle">Ön yüz menü yapısını ve hiyerarşisini düzenleyin</div>
+      </div>
+      <button class="btn btn-primary" onclick="alert('Yeni Menü formu açılacak')">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        + Yeni Menü
+      </button>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="14" height="14" style="color:var(--primary)"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>Ara & Filtrele</div>
+      </div>
+      <div style="padding:14px 18px;display:flex;gap:12px;flex-wrap:wrap;">
+        <input type="text" class="form-control" placeholder="Menü başlığı veya ID..." style="max-width:260px;" oninput="filterGenericTable('tbl-menus',this.value)">
+        <select class="form-control" style="max-width:160px;">
+          <option value="">Konum — Tümü</option>
+          <option>Header</option>
+          <option>Footer</option>
+        </select>
+        <select class="form-control" style="max-width:160px;">
+          <option value="">Dil — Tümü</option>
+          <option>Türkçe</option>
+          <option>İngilizce</option>
+        </select>
+      </div>
+    </div>
+    <div class="card grid-card">
+      <div class="section-divider"></div>
+      <div class="table-wrap">
+        <table id="tbl-menus">
+          <thead><tr>
+            <th>İşlemler</th>
+            <th>Menü ID</th>
+            <th>Menü Başlığı</th>
+            <th>Dil</th>
+            <th>Menü Kırılımı</th>
+            <th>Menü Konumu</th>
+            <th>Bağlı Sayfa</th>
+            <th>Ön Yüz Sırası</th>
+            <th>Aktif mi?</th>
+            <th>Oluşturulma Tarihi</th>
+          </tr></thead>
+          <tbody>
+            <tr><td><span class="badge badge-info" style="cursor:pointer">Düzenle</span></td><td class="mono">M-000000001</td><td class="td-name">Kurumsal</td><td>TR</td><td class="muted">—</td><td>Üst Menü</td><td>Kurumsal Detay</td><td>1</td><td><span class="badge badge-success">Evet</span></td><td class="muted">04 Şubat 2026 22:18:24</td></tr>
+            <tr><td><span class="badge badge-info" style="cursor:pointer">Düzenle</span></td><td class="mono">M-000000002</td><td class="td-name">Biz Kimiz</td><td>TR</td><td>Kurumsal</td><td>Üst Menü</td><td>Haberler Listeleme</td><td>2</td><td><span class="badge badge-success">Evet</span></td><td class="muted">04 Şubat 2026 22:18:24</td></tr>
+            <tr><td><span class="badge badge-info" style="cursor:pointer">Düzenle</span></td><td class="mono">M-000000003</td><td class="td-name">Faaliyetlerimiz</td><td>TR</td><td class="muted">—</td><td>Üst Menü</td><td>Faaliyetler Detay</td><td>3</td><td><span class="badge badge-success">Evet</span></td><td class="muted">04 Şubat 2026 22:18:24</td></tr>
+            <tr><td><span class="badge badge-info" style="cursor:pointer">Düzenle</span></td><td class="mono">M-000000004</td><td class="td-name">İletişim</td><td>TR</td><td class="muted">—</td><td>Üst Menü</td><td>İletişim Sayfası</td><td>4</td><td><span class="badge badge-success">Evet</span></td><td class="muted">04 Şubat 2026 22:18:24</td></tr>
+            <tr><td><span class="badge badge-info" style="cursor:pointer">Düzenle</span></td><td class="mono">M-000000005</td><td class="td-name">Ana Sayfa</td><td>TR</td><td class="muted">—</td><td>Footer</td><td>Ana Sayfa</td><td>1</td><td><span class="badge badge-success">Evet</span></td><td class="muted">04 Şubat 2026 22:18:24</td></tr>
+            <tr><td><span class="badge badge-info" style="cursor:pointer">Düzenle</span></td><td class="mono">M-000000006</td><td class="td-name">Hakkımızda</td><td>EN</td><td class="muted">—</td><td>Header</td><td>About Us</td><td>1</td><td><span class="badge badge-neutral">Hayır</span></td><td class="muted">05 Şubat 2026 10:00:00</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination-bar"><div class="pagination-info">6 kayıt gösteriliyor</div></div>
+    </div>
+  </div>
+  </div><!-- /view-menus -->
+
+</main>
+
+<div class="toast" id="toast">
+  <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-msg"></span>
+</div>
+
+<script>
+// ── DATA ──
+const CHANNELS = ['Web Sitesi', 'Mobil Uygulama', 'SMS', 'Çağrı Merkezi', 'Banka Transferi', 'Elden Teslim'];
+const PAYMENT_METHODS = ['Kredi Kartı', 'Banka Transferi / EFT', 'Kapıda Nakit', 'Mobil Ödeme', 'FAST'];
+const CAMPAIGNS = ['Deprem Yardım Kampanyası 2024', 'Kış Yardım Seferberliği', 'Sel Afeti Acil Yardım', 'Okul Çantası Kampanyası', 'Genel Bağış'];
+const CURRENCIES = ['TRY', 'USD', 'EUR', 'GBP', 'SAR'];
+const DONATION_TYPES = ['Düzenli Nakdi Bağış', 'Tek Seferlik Bağış'];
+const DIST_RESULTS = ['Dağıtıldı', 'Beklemede', 'Hata', 'Kısmi Dağıtım', '—'];
+const FIRST_NAMES = ['Ahmet','Mehmet','Ayşe','Fatma','Ali','Hasan','Zeynep','Merve','Murat','Emre','Selin','Leyla','Yusuf','Ömer','Elif'];
+const LAST_NAMES = ['Yılmaz','Kaya','Demir','Çelik','Şahin','Yıldız','Arslan','Doğan','Aydın','Öztürk','Koç','Kurt','Polat','Aslan','Güneş'];
+
+const IBANS = {
+  'Deprem Yardım Kampanyası 2024': 'TR33 0006 1005 1978 6457 8413 26',
+  'Kış Yardım Seferberliği':       'TR49 0006 2000 4390 0006 2957 75',
+  'Sel Afeti Acil Yardım':         'TR72 0001 2009 4520 0058 0000 00',
+  'Okul Çantası Kampanyası':       'TR82 0006 4000 0014 2630 4295 26',
+  'Genel Bağış':                   'TR40 0001 0017 4538 7373 1000 00',
+};
+
+const NOTES = ['—','—','—','—','Acil yardım için','Depremzedeler için','Geçmiş olsun','Allah kabul etsin','—','Çocuklar için','Hayırlı olsun'];
+
+function rnd(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function pad(n, len=2) { return String(n).padStart(len,'0'); }
+
+function genDate() {
+  const d = new Date(2024, Math.floor(Math.random()*12), Math.floor(Math.random()*28)+1);
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(Math.floor(Math.random()*24))}:${pad(Math.floor(Math.random()*60))}`;
+}
+
+// generate 2847 records
+let allData = [];
+for(let i=1; i<=2847; i++){
+  const isAnon = Math.random() < 0.11;
+  const firstName = rnd(FIRST_NAMES);
+  const lastName = rnd(LAST_NAMES);
+  const campaign = rnd(CAMPAIGNS);
+  const isSuccess = Math.random() < 0.945;
+  const donationType = rnd(DONATION_TYPES);
+  const prjCode = 'PRJ-' + String(Math.floor(Math.random()*500)+1000);
+  const orderId = 'ORD-' + String(1000000 + i);
+  const detailCode = 'BGS-' + new Date().getFullYear() + pad(Math.floor(Math.random()*12)+1) + pad(Math.floor(Math.random()*28)+1) + '-' + pad(i,4);
+  const amount = (Math.random() * 9500 + 50).toFixed(2);
+  const distResult = isSuccess ? rnd(['Dağıtıldı','Dağıtıldı','Dağıtıldı','Beklemede','Kısmi Dağıtım']) : 'Hata';
+  allData.push({
+    no: i, code: detailCode, orderId, projCode: prjCode, campaign,
+    iban: IBANS[campaign],
+    donorName: isAnon ? null : firstName + ' ' + lastName,
+    amount: parseFloat(amount),
+    currency: rnd(CURRENCIES),
+    channel: rnd(CHANNELS),
+    date: genDate(),
+    type: donationType,
+    note: rnd(NOTES),
+    isAnon,
+    payMethod: rnd(PAYMENT_METHODS),
+    status: isSuccess ? 'Başarılı' : 'Başarısız',
+    distResult
+  });
+}
+
+// ── STATE ──
+let filteredData = [...allData];
+let currentPage = 1;
+let pageSize = 20;
+let sortCol = -1;
+let sortDir = 1;
+
+// ── VIEW NAVIGATION ──
+const viewMeta = {
+  'view-bagis':      { label: 'Bağış Hareketleri Raporu', section: 'Raporlar' },
+  'view-projects':   { label: 'Proje Yönetimi',           section: 'Kampanya Yönetimi' },
+  'view-categories': { label: 'Kategori Yönetimi',        section: 'Kampanya Yönetimi' },
+  'view-campaigns':  { label: 'Kampanya Yönetimi',        section: 'Kampanya Yönetimi' },
+  'view-currencies': { label: 'Para Birimleri',           section: 'Bağış Yönetimi' },
+  'view-menus':      { label: 'Menü Yönetimi',            section: 'İçerik Yönetimi' },
+  'view-dashboard':  { label: 'Genel Bakış',              section: 'Ana Menü' },
+};
+
+function showView(viewId) {
+  // hide all views
+  document.querySelectorAll('.view-panel').forEach(v => v.style.display = 'none');
+  // show target
+  const target = document.getElementById(viewId);
+  if (target) target.style.display = '';
+  // update sidebar active
+  document.querySelectorAll('.sidebar-item').forEach(a => a.classList.remove('active'));
+  const clicked = document.querySelector(`[onclick="showView('${viewId}')"]`);
+  if (clicked) clicked.classList.add('active');
+  // update breadcrumb
+  const meta = viewMeta[viewId] || { label: viewId, section: 'Yönetim Paneli' };
+  const bc = document.getElementById('breadcrumb');
+  if (bc) {
+    bc.innerHTML = `
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+      Yönetim Paneli
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      ${meta.section}
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      <span>${meta.label}</span>`;
+  }
+}
+
+// ── GENERIC TABLE FILTER ──
+function filterGenericTable(tableId, query) {
+  const q = query.toLowerCase();
+  const rows = document.querySelectorAll(`#${tableId} tbody tr`);
+  rows.forEach(row => {
+    row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+
+function filterGenericTableByCol(tableId, colIndex, value) {
+  const rows = document.querySelectorAll(`#${tableId} tbody tr`);
+  rows.forEach(row => {
+    const cell = row.cells[colIndex];
+    if (!cell) return;
+    row.style.display = (!value || cell.textContent.trim() === value) ? '' : 'none';
+  });
+}
+
+
+function renderTable() {
+  const start = (currentPage - 1) * pageSize;
+  const slice = filteredData.slice(start, start + pageSize);
+  const tbody = document.getElementById('table-body');
+  tbody.innerHTML = slice.map(r => `
+    <tr>
+      <td class="mono muted">${r.no}</td>
+      <td class="mono" style="color:var(--primary);font-weight:600;">${r.code}</td>
+      <td class="mono muted">${r.orderId}</td>
+      <td class="mono muted">${r.projCode}</td>
+      <td class="td-name">${r.campaign}</td>
+      <td class="mono" style="font-size:11px;color:var(--text-muted);">${r.iban}</td>
+      <td class="${r.isAnon ? 'td-anon' : 'td-name'}">${r.isAnon ? 'Anonim' : r.donorName}</td>
+      <td style="font-weight:600;text-align:right;">${r.amount.toLocaleString('tr-TR',{minimumFractionDigits:2})}</td>
+      <td><span class="badge badge-neutral">${r.currency}</span></td>
+      <td>${r.channel}</td>
+      <td class="mono muted" style="font-size:12px;">${r.date}</td>
+      <td><span class="badge ${r.type==='Düzenli Nakdi Bağış'?'badge-info':'badge-neutral'}">${r.type}</span></td>
+      <td class="muted">${r.note}</td>
+      <td><span class="badge ${r.isAnon?'badge-warn':'badge-neutral'}">${r.isAnon?'Evet':'Hayır'}</span></td>
+      <td>${r.payMethod}</td>
+      <td><span class="badge ${r.status==='Başarılı'?'badge-success':'badge-fail'}">${r.status==='Başarılı'?'✓ ':r.status==='Başarısız'?'✗ ':''}${r.status}</span></td>
+      <td><span class="badge ${r.distResult==='Dağıtıldı'?'badge-success':r.distResult==='Hata'?'badge-fail':r.distResult==='Beklemede'?'badge-warn':'badge-neutral'}">${r.distResult}</span></td>
+    </tr>
+  `).join('');
+  renderPagination();
+  document.getElementById('page-info').textContent =
+    `${start+1}–${Math.min(start+pageSize, filteredData.length)} / ${filteredData.length.toLocaleString('tr-TR')} kayıt gösteriliyor`;
+  document.getElementById('total-count').textContent = filteredData.length.toLocaleString('tr-TR');
+}
+
+function renderPagination() {
+  const totalPages = Math.ceil(filteredData.length / pageSize);
+  const ctrl = document.getElementById('pagination-controls');
+  let html = '';
+  html += `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
+  const pages = [];
+  if(totalPages<=7){ for(let i=1;i<=totalPages;i++) pages.push(i); }
+  else {
+    pages.push(1);
+    if(currentPage>3) pages.push('...');
+    for(let i=Math.max(2,currentPage-1);i<=Math.min(totalPages-1,currentPage+1);i++) pages.push(i);
+    if(currentPage<totalPages-2) pages.push('...');
+    pages.push(totalPages);
+  }
+  pages.forEach(p => {
+    if(p==='...') html += `<span style="padding:0 4px;color:var(--text-muted);">…</span>`;
+    else html += `<button class="page-btn ${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`;
+  });
+  html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>›</button>`;
+  ctrl.innerHTML = html;
+}
+
+function goPage(p) {
+  const totalPages = Math.ceil(filteredData.length / pageSize);
+  if(p<1||p>totalPages) return;
+  currentPage = p;
+  renderTable();
+  document.querySelector('.page-content').scrollTop = document.querySelector('.page-content').scrollTop;
+}
+
+function changePageSize(v) { pageSize = parseInt(v); currentPage = 1; renderTable(); }
+
+function sortTable(col) {
+  if(sortCol===col) sortDir*=-1; else { sortCol=col; sortDir=1; }
+  document.querySelectorAll('th').forEach((th,i)=>{
+    th.classList.toggle('sorted', i===col);
+    const si = th.querySelector('.sort-icon');
+    if(si) si.textContent = i===col ? (sortDir===1?'↑':'↓') : '↕';
+  });
+  const keys = ['no','code','orderId','projCode','campaign','iban','donorName','amount','currency','channel','date','type','note','isAnon','payMethod','status','distResult'];
+  const k = keys[col];
+  filteredData.sort((a,b)=>{
+    let va = a[k]??'', vb = b[k]??'';
+    if(typeof va==='number') return sortDir*(va-vb);
+    return sortDir * String(va).localeCompare(String(vb),'tr');
+  });
+  currentPage = 1;
+  renderTable();
+}
+
+// ── FILTERS ──
+function applyFilters() {
+  const code = document.getElementById('f-code').value.trim().toLowerCase();
+  const name = document.getElementById('f-name').value.trim().toLowerCase();
+  const campaign = document.getElementById('f-campaign').value;
+  const currency = document.getElementById('f-currency').value;
+  const amtMin = parseFloat(document.getElementById('f-amount-min').value)||0;
+  const amtMax = parseFloat(document.getElementById('f-amount-max').value)||Infinity;
+  const type = document.getElementById('f-type').value;
+  const status = document.getElementById('f-status').value;
+  const noteFilter = document.getElementById('f-note').value.trim().toLowerCase();
+  const dateStart = document.getElementById('f-date-start').value;
+  const dateEnd = document.getElementById('f-date-end').value;
+
+  filteredData = allData.filter(r => {
+    if(code && !r.code.toLowerCase().includes(code)) return false;
+    if(name){
+      const dn = r.donorName?r.donorName.toLowerCase():'anonim';
+      if(!dn.includes(name)) return false;
+    }
+    if(campaign && !r.campaign.startsWith(campaign.split('\u2013')[0].trim())) return false;
+    if(currency && !r.currency.startsWith(currency.split('\u2013')[0].trim())) return false;
+    if(r.amount < amtMin || r.amount > amtMax) return false;
+    if(type && r.type !== type) return false;
+    if(status && r.status !== status) return false;
+    if(noteFilter && !r.note.toLowerCase().includes(noteFilter)) return false;
+    if(dateStart && r.date < dateStart) return false;
+    if(dateEnd && r.date > dateEnd+' 23:59') return false;
+    return true;
+  });
+
+  currentPage = 1;
+  renderTable();
+  renderActiveTags();
+  showToast(`${filteredData.length.toLocaleString('tr-TR')} kayıt listelendi`);
+}
+
+function resetFilters() {
+  ['f-code','f-name','f-amount-min','f-amount-max','f-note','f-date-start','f-date-end'].forEach(id => document.getElementById(id).value='');
+  ['f-campaign','f-currency','f-type','f-status'].forEach(id => document.getElementById(id).selectedIndex=0);
+  filteredData = [...allData];
+  currentPage = 1;
+  renderTable();
+  renderActiveTags();
+}
+
+function renderActiveTags() {
+  const tags = [];
+  const v = (id) => document.getElementById(id).value.trim();
+  if(v('f-code')) tags.push({label:'Kod: '+v('f-code'), id:'f-code'});
+  if(v('f-name')) tags.push({label:'İsim: '+v('f-name'), id:'f-name'});
+  if(v('f-campaign')) tags.push({label:'Kampanya: '+v('f-campaign').split('–')[0].trim(), id:'f-campaign'});
+  if(v('f-currency')) tags.push({label:'Para Birimi: '+v('f-currency').split('–')[0].trim(), id:'f-currency'});
+  if(v('f-type')) tags.push({label:'Tür: '+v('f-type'), id:'f-type'});
+  if(v('f-note')) tags.push({label:'Açıklama: '+v('f-note'), id:'f-note'});
+  if(v('f-status')) tags.push({label:'Durum: '+v('f-status'), id:'f-status'});
+
+  const cont = document.getElementById('active-tags');
+  if(tags.length===0){ cont.style.display='none'; return; }
+  cont.style.display='flex';
+  cont.innerHTML = tags.map(t=>`<span class="filter-tag" onclick="clearTag('${t.id}')">
+    ${t.label}
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </span>`).join('') +
+  `<span class="filter-tag" onclick="resetFilters()" style="border-color:rgba(244,121,32,0.5);">
+    Tümünü Temizle
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </span>`;
+}
+
+function clearTag(id) {
+  const el = document.getElementById(id);
+  if(el.tagName==='SELECT') el.selectedIndex=0; else el.value='';
+  applyFilters();
+}
+
+// ── FILTER TOGGLE ──
+let filterVisible = true;
+function toggleFilter() {
+  filterVisible = !filterVisible;
+  const body = document.getElementById('filter-body');
+  body.style.display = filterVisible ? 'grid' : 'none';
+  document.getElementById('filter-toggle-label').textContent = filterVisible ? 'Gizle' : 'Göster';
+  document.getElementById('filter-chevron').style.transform = filterVisible ? '' : 'rotate(-90deg)';
+}
+
+// ── THEME ──
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme')==='dark';
+  html.setAttribute('data-theme', isDark?'light':'dark');
+  const icon = document.getElementById('theme-icon');
+  icon.innerHTML = isDark
+    ? '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>'
+    : '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+}
+
+// ── EXCEL EXPORT ──
+function exportExcel() {
+  const headers = ['Sıra No','Bağış Detay Kodu','Sipariş ID','Proje Kodu','Kampanya Adı','Kampanya IBAN','Bağışçı Adı Soyadı','Birim Tutar','Para Birimi','Bağış Kanalı','Bağış Tarihi','Bağış Türü','Bağışçı Notu','Anonim mi?','Ödeme Yöntemi','Ödeme Durumu','Dağıtım Talimat Sonucu'];
+  const rows = filteredData.map(r=>[
+    r.no, r.code, r.orderId, r.projCode, r.campaign, r.iban,
+    r.isAnon?'Anonim':r.donorName, r.amount, r.currency, r.channel,
+    r.date, r.type, r.note, r.isAnon?'Evet':'Hayır',
+    r.payMethod, r.status, r.distResult
+  ]);
+  const csv = [headers,...rows].map(row=>row.map(c=>'"'+String(c??'').replace(/"/g,'""')+'"').join(',')).join('\n');
+  const BOM = '\uFEFF';
+  const blob = new Blob([BOM+csv],{type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download='bagis_hareketleri_raporu.csv'; a.click();
+  URL.revokeObjectURL(url);
+  showToast(`${filteredData.length.toLocaleString('tr-TR')} kayıt Excel'e aktarıldı`);
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3000);
+}
+
+// ── INIT ──
+renderTable();
+</script>
+</body>
+</html>
